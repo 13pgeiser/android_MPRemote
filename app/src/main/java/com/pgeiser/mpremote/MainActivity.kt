@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         checkBluetoothEnabled()
     }
 
-    private val bluetoothAdapter: BluetoothAdapter by lazy {
+    val bluetoothAdapter: BluetoothAdapter by lazy {
         val bluetoothManager = this.getSystemService(BluetoothManager::class.java) as BluetoothManager
         bluetoothManager.adapter
     }
