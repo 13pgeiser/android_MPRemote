@@ -1,9 +1,12 @@
 package com.pgeiser.mpremote
 
 import android.Manifest
+import android.content.Context
+import android.location.LocationManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
 import timber.log.Timber
@@ -18,6 +21,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Timber.i("onCreate!")
         methodRequirePermissions()
+        checkLocation()
+    }
+
+    private fun checkLocation() {
+        // Seems mandatory for the scanning to work...
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(this, "GPS must be enabled", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
     }
 
     // Ctrl-o (override members) -> onRequestP...
