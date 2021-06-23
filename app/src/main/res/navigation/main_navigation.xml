@@ -7,5 +7,20 @@
     <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.pgeiser.mpremote.fragment_welcome.WelcomeFragment"
-        android:label="WelcomeFragment" />
+        android:label="WelcomeFragment" >
+        <action
+            android:id="@+id/action_welcomeFragment_to_connectViewFragment"
+            app:destination="@id/connectViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/connectViewFragment"
+        android:name="com.pgeiser.mpremote.fragment_connect.ConnectFragment"
+        android:label="ConnectViewFragment" >
+        <action
+            android:id="@+id/action_connectViewFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+        <argument
+            android:name="bluetoothDevice"
+            app:argType="android.bluetooth.BluetoothDevice" />
+    </fragment>
 </navigation>

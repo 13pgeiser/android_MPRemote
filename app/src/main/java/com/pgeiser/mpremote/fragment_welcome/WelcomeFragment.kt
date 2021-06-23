@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.pgeiser.mpremote.MainActivity
 import com.pgeiser.mpremote.R
 import com.pgeiser.mpremote.databinding.FragmentWelcomeBinding
@@ -29,6 +31,12 @@ class WelcomeFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(WelcomeViewModel::class.java)
         binding.model = viewModel
         binding.lifecycleOwner = this
+        viewModel.bluetoothDevice.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                requireView().findNavController().navigate(
+                    WelcomeFragmentDirections.actionWelcomeFragmentToConnectViewFragment(it))
+            }
+        })
         Timber.i("onCreateView: done!")
         return binding.root
     }
