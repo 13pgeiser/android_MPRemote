@@ -4,10 +4,7 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.*
 import android.os.ParcelUuid
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.pgeiser.mpremote.MainActivity
 import timber.log.Timber
 
@@ -15,7 +12,7 @@ class WelcomeViewModel(
     application: Application,
     private val activity: MainActivity,
 )
-    : AndroidViewModel(application) {
+    : AndroidViewModel(application), LifecycleObserver {
 
     var uuid : String = "5a791800-0d19-4fd9-87f9-e934aedbce59"
     private val _bluetoothIsScanning = MutableLiveData<Boolean>()
@@ -37,7 +34,7 @@ class WelcomeViewModel(
         bluetoothLeScanner = activity.bluetoothAdapter.bluetoothLeScanner
         assert(bluetoothLeScanner != null)
         Timber.i("init")
-
+        activity.lifecycle.addObserver(this)
     }
 
     fun toggleScan() {
@@ -49,9 +46,11 @@ class WelcomeViewModel(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun startScanning() {
+        if (bluetoothIsScanning.value == true)
+            return
         Timber.i("startScanning")
-        assert(bluetoothIsScanning.value == false)
         _bluetoothIsScanning.value = true
         _bluetoothDevice.value = null
         val filter = ScanFilter.Builder().setServiceUuid(
@@ -64,10 +63,12 @@ class WelcomeViewModel(
         bluetoothLeScanner.startScan(filterList, settings, leScanCallback)
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun stopScanning() {
+        if (bluetoothIsScanning.value == false)
+            return
         Timber.i("stopScanning")
         bluetoothLeScanner.stopScan(leScanCallback)
-        assert(bluetoothIsScanning.value == true)
         _bluetoothIsScanning.value = false
     }
 
