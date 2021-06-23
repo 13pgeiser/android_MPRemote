@@ -44,4 +44,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     // Logging
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    // Permissions
+    implementation 'com.vmadalin:easypermissions-ktx:0.1.0'
 }
