@@ -47,7 +47,7 @@ class ConnectViewModel(
                 if (connectionAttempt.value!! <= maxConnectionAttempt) {
                     defaultScope.launch {
                         Timber.i("Waiting...")
-                        delay(100)
+                        delay(250)
                         connectGattInternal()
                     }
                 } else {
@@ -66,52 +66,19 @@ class ConnectViewModel(
             }
         }
 
-        private fun printProperties(ch: BluetoothGattCharacteristic): String {
-            var props: ArrayList<String> = ArrayList()
-            var properties = ch.properties
-            if ((properties and BluetoothGattCharacteristic.PROPERTY_READ) != 0)
-                props.add("READABLE")
-            if ((properties and BluetoothGattCharacteristic.PROPERTY_WRITE) != 0)
-                props.add("WRITABLE")
-            if ((properties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) != 0)
-                props.add("WRITABLE WITHOUT RESPONSE")
-            if ((properties and BluetoothGattCharacteristic.PROPERTY_INDICATE) != 0)
-                props.add("INDICATABLE")
-            if ((properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0)
-                props.add("NOTIFIABLE")
-            return props.joinToString()
-        }
-
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             super.onServicesDiscovered(gatt, status)
             Timber.i("Discovered ${gatt.services.size} services for ${gatt.device.address}.")
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                var serviceStr : String = ""
                 if (gatt.services.isEmpty()) {
-                    serviceStr = "No Services found!!!!"
-                } else {
-                    gatt.services.forEach() { service ->
-                        val characteristicsTable = service.characteristics.joinToString(
-                            separator = "\n|--",
-                            prefix = "|--"
-                        ) { char ->
-                            var description = "${char.uuid}: ${printProperties(char)}"
-                            if (char.descriptors.isNotEmpty()) {
-                                description += "\n" + char.descriptors.joinToString(
-                                    separator = "\n|------",
-                                    prefix = "|------"
-                                ) { descriptor ->
-                                    "${descriptor.uuid}: ${descriptor.toString()}"
-                                }
-                            }
-                            description
-                        }
-                        serviceStr += "\nService ${service.uuid}\n$characteristicsTable"
+                    Timber.i("No Services found!!!!")
+                    uiScope.launch {
+                        _gattServices.value = gatt.services.toTypedArray()
                     }
-                }
-                Timber.i(serviceStr)
-                uiScope.launch {
-                    _serviceString.value = serviceStr
+                } else {
+                    uiScope.launch {
+                        _gattServices.value = gatt.services.toTypedArray()
+                    }
                 }
                 gatt.close()
             } else {
@@ -126,33 +93,32 @@ class ConnectViewModel(
     private var maxConnectionAttempt = 10
     private val _bluetoothDevice = MutableLiveData<BluetoothDevice>()
     val bluetoothDevice : LiveData<BluetoothDevice>  get() = _bluetoothDevice
-    private val _serviceString = MutableLiveData<String>()
-    val serviceString : LiveData<String>  get() = _serviceString
+    private val _gattServices = MutableLiveData<Array<BluetoothGattService>>()
+    val gattServices : LiveData<Array<BluetoothGattService>>  get() = _gattServices
 
     init {
         Timber.i("init: %s", btDev)
         _bluetoothDevice.value = btDev
-        // connect()
         activity.lifecycle.addObserver(this)
+    }
+
+    fun discover() {
+        Timber.i("discover")
+        uiScope.launch {
+            _connectionAttempt.value = 0
+            _gattServices.value = null
+        }
+        connectGattInternal()
     }
 
     private fun connectGattInternal() {
         bluetoothDevice.value?.connectGatt(activity.applicationContext, false, gattCallback)
     }
 
-    private fun connect() {
-        Timber.i("connect")
-        uiScope.launch {
-            _connectionAttempt.value = 0
-        }
-        connectGattInternal()
-    }
-
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onStart() {
         Timber.i("onStart")
-        _serviceString.value = ""
-        connect()
+        discover()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

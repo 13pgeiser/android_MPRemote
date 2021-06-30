@@ -26,13 +26,14 @@ class WelcomeFragment : Fragment() {
             inflater, R.layout.fragment_welcome, container, false
         )
         val application = requireNotNull(this.activity).application
-        var activity = requireActivity() as MainActivity
+        val activity = requireActivity() as MainActivity
         val viewModelFactory = WelcomeViewModelFactory(application, activity)
         viewModel = ViewModelProvider(this, viewModelFactory).get(WelcomeViewModel::class.java)
         binding.model = viewModel
         binding.lifecycleOwner = this
         viewModel.bluetoothDevice.observe(viewLifecycleOwner, Observer {
             if (it != null) {
+                Timber.i("WelcomeFragmentDirections.actionWelcomeFragmentToConnectViewFragment")
                 requireView().findNavController().navigate(
                     WelcomeFragmentDirections.actionWelcomeFragmentToConnectViewFragment(it))
             }
