@@ -47,7 +47,7 @@ class ConnectViewModel(
                 if (connectionAttempt.value!! <= maxConnectionAttempt) {
                     defaultScope.launch {
                         Timber.i("Waiting...")
-                        delay(500)
+                        delay(100)
                         connectGattInternal()
                     }
                 } else {
@@ -123,7 +123,7 @@ class ConnectViewModel(
 
     private val _connectionAttempt = MutableLiveData<Int>()
     val connectionAttempt : LiveData<Int> get() = _connectionAttempt
-    private var maxConnectionAttempt = 5
+    private var maxConnectionAttempt = 10
     private val _bluetoothDevice = MutableLiveData<BluetoothDevice>()
     val bluetoothDevice : LiveData<BluetoothDevice>  get() = _bluetoothDevice
     private val _serviceString = MutableLiveData<String>()

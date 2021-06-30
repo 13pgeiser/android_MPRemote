@@ -1,9 +1,11 @@
 package com.pgeiser.mpremote.fragment_welcome
 
 import android.app.Application
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.*
 import android.os.ParcelUuid
+import android.widget.Toast
 import androidx.lifecycle.*
 import com.pgeiser.mpremote.MainActivity
 import timber.log.Timber
@@ -26,13 +28,17 @@ class WelcomeViewModel(
     private val _bluetoothDevice = MutableLiveData<BluetoothDevice>()
     val bluetoothDevice : LiveData<BluetoothDevice>  get() = _bluetoothDevice
 
-    private lateinit var bluetoothLeScanner: BluetoothLeScanner
+    private val bluetoothLeScanner: BluetoothLeScanner by lazy {
+        if (activity.bluetoothAdapter.bluetoothLeScanner == null) {
+            Toast.makeText(activity, "Bluetooth must be enabled", Toast.LENGTH_SHORT).show()
+            activity.finish()
+        }
+        activity.bluetoothAdapter.bluetoothLeScanner
+    }
 
     init {
         _bluetoothIsScanning.value = false
         _bluetoothDevice.value = null
-        bluetoothLeScanner = activity.bluetoothAdapter.bluetoothLeScanner
-        assert(bluetoothLeScanner != null)
         Timber.i("init")
         activity.lifecycle.addObserver(this)
     }
