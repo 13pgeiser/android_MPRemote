@@ -132,7 +132,7 @@ class ConnectViewModel(
     init {
         Timber.i("init: %s", btDev)
         _bluetoothDevice.value = btDev
-        connect()
+        // connect()
         activity.lifecycle.addObserver(this)
     }
 
@@ -151,6 +151,8 @@ class ConnectViewModel(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onStart() {
         Timber.i("onStart")
+        _serviceString.value = ""
+        connect()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)

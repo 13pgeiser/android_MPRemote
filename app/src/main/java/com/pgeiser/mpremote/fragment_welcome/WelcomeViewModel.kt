@@ -19,7 +19,7 @@ class WelcomeViewModel(
     var uuid : String = "5a791800-0d19-4fd9-87f9-e934aedbce59"
     private val _bluetoothIsScanning = MutableLiveData<Boolean>()
     val bluetoothIsScanning : LiveData<Boolean> get() = _bluetoothIsScanning
-    val bluetoothIsScanningString =  Transformations.map(bluetoothIsScanning) {
+    val bluetoothIsScanningString: LiveData<String> =  Transformations.map(bluetoothIsScanning) {
         scan -> when(scan) {
             true -> "Stop Scan"
             false ->"Start Scan"
@@ -52,7 +52,6 @@ class WelcomeViewModel(
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun startScanning() {
         if (bluetoothIsScanning.value == true)
             return
@@ -69,7 +68,6 @@ class WelcomeViewModel(
         bluetoothLeScanner.startScan(filterList, settings, leScanCallback)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun stopScanning() {
         if (bluetoothIsScanning.value == false)
             return
@@ -85,5 +83,19 @@ class WelcomeViewModel(
             stopScanning()
             _bluetoothDevice.value = result.device
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    private fun onStart() {
+        Timber.i("onStart")
+        if (_bluetoothDevice.value == null) {
+            startScanning()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    private fun onStop() {
+        Timber.i("onStop")
+        stopScanning()
     }
 }
