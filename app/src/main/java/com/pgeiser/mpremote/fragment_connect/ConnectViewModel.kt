@@ -42,7 +42,7 @@ class ConnectViewModel(
             } else {
                 gatt.close()
                 uiScope.launch {
-                    _connectionAttempt?.value = _connectionAttempt.value?.plus(1)
+                    _connectionAttempt.value = _connectionAttempt.value?.plus(1)
                 }
                 if (connectionAttempt.value!! <= maxConnectionAttempt) {
                     defaultScope.launch {

@@ -22,6 +22,7 @@ class AttributesViewModel(
 
     init {
         Timber.i("init: %s", services)
+        activity.lifecycle.addObserver(this)
         _gattServices.value = services
         _serviceString.value = gattServicesAsString(services)
     }
@@ -73,21 +74,13 @@ class AttributesViewModel(
     private fun onStart() {
         Timber.i("onStart")
         _serviceString.value = gattServicesAsString(services)
+        _gattServices.value = null
+        _gattServices.value = services
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onStop() {
         Timber.i("onStop")
         _serviceString.value = ""
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    private fun onPause() {
-        Timber.i("onPause")
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private fun onResume() {
-        Timber.i("onResume")
     }
 }

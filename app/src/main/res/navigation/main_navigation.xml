@@ -22,6 +22,11 @@
         <action
             android:id="@+id/action_connectViewFragment_to_attributesFragment"
             app:destination="@id/attributesFragment" />
+        <action
+            android:id="@+id/action_connectViewFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
     <fragment
         android:id="@+id/attributesFragment"
@@ -29,5 +34,10 @@
         android:label="AttributesFragment" >
         <argument android:name="services"
             app:argType="android.bluetooth.BluetoothGattService[]" />
+        <action
+            android:id="@+id/action_attributesFragment_to_connectViewFragment"
+            app:destination="@id/connectViewFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
 </navigation>
