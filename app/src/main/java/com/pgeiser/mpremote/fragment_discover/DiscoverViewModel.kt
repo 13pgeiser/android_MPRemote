@@ -1,4 +1,4 @@
-package com.pgeiser.mpremote.fragment_connect
+package com.pgeiser.mpremote.fragment_discover
 
 import android.app.Application
 import android.bluetooth.*
@@ -7,7 +7,7 @@ import com.pgeiser.mpremote.MainActivity
 import kotlinx.coroutines.*
 import timber.log.Timber
 
-class ConnectViewModel(
+class DiscoverViewModel(
     application: Application,
     private val activity: MainActivity,
     private val btDev: BluetoothDevice,

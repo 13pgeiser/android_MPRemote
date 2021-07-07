@@ -1,4 +1,4 @@
-package com.pgeiser.mpremote.fragment_attributes
+package com.pgeiser.mpremote.fragment_services
 
 import android.app.Application
 import android.bluetooth.BluetoothGattService
@@ -7,7 +7,7 @@ import com.pgeiser.mpremote.Gatt
 import com.pgeiser.mpremote.MainActivity
 import timber.log.Timber
 
-class AttributesViewModel(
+class ServicesViewModel(
     application: Application,
     private val activity: MainActivity,
     private val services : Array<BluetoothGattService>,

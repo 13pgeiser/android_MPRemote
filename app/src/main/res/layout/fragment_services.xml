@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="model"
-            type="com.pgeiser.mpremote.fragment_attributes.AttributesViewModel" />
+            type="com.pgeiser.mpremote.fragment_services.ServicesViewModel" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView

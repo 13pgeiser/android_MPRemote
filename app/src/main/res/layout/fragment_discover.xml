@@ -7,12 +7,12 @@
         <import type="android.view.View"/>
         <variable
             name="model"
-            type="com.pgeiser.mpremote.fragment_connect.ConnectViewModel" />
+            type="com.pgeiser.mpremote.fragment_discover.DiscoverViewModel" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragment_connect.ConnectFragment">
+        tools:context=".fragment_discover.DiscoverFragment">
 
         <TextView
             android:id="@+id/textView5"

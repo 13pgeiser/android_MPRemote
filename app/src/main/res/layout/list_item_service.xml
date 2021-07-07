@@ -11,7 +11,7 @@
 
         <variable
             name="clickListener"
-            type="com.pgeiser.mpremote.fragment_attributes.ServiceListener" />
+            type="com.pgeiser.mpremote.fragment_services.ServiceListener" />
 
         <variable
             name="gatt"

@@ -1,4 +1,4 @@
-package com.pgeiser.mpremote.fragment_attributes
+package com.pgeiser.mpremote.fragment_services
 
 import android.bluetooth.BluetoothGattService
 import android.os.Bundle
@@ -13,26 +13,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pgeiser.mpremote.MainActivity
 import com.pgeiser.mpremote.R
-import com.pgeiser.mpremote.databinding.FragmentAttributesBinding
-import com.pgeiser.mpremote.fragment_connect.ConnectFragmentArgs
+import com.pgeiser.mpremote.databinding.FragmentServicesBinding
 import timber.log.Timber
 
-class AttributesFragment : Fragment() {
-    private lateinit var viewModel: AttributesViewModel
+class ServicesFragment : Fragment() {
+    private lateinit var viewModel: ServicesViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val binding: FragmentAttributesBinding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_attributes, container, false
+        val binding: FragmentServicesBinding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_services, container, false
         )
         val application = requireNotNull(this.activity).application
         val activity = requireActivity() as MainActivity
-        val safeArgs = AttributesFragmentArgs.fromBundle(requireArguments())
+        val safeArgs = ServicesFragmentArgs.fromBundle(requireArguments())
         val services : Array<BluetoothGattService> = safeArgs.services
-        val viewModelFactory = AttributesViewModelFactory(application, activity, services)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(AttributesViewModel::class.java)
+        val viewModelFactory = ServicesViewModelFactory(application, activity, services)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(ServicesViewModel::class.java)
         binding.model = viewModel
         binding.lifecycleOwner = this
         val adapter = ServiceAdapter(ServiceListener {

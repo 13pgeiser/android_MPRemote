@@ -14,7 +14,7 @@
     </fragment>
     <fragment
         android:id="@+id/connectViewFragment"
-        android:name="com.pgeiser.mpremote.fragment_connect.ConnectFragment"
+        android:name="com.pgeiser.mpremote.fragment_discover.DiscoverFragment"
         android:label="ConnectViewFragment" >
         <argument
             android:name="bluetoothDevice"
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/attributesFragment"
-        android:name="com.pgeiser.mpremote.fragment_attributes.AttributesFragment"
+        android:name="com.pgeiser.mpremote.fragment_services.ServicesFragment"
         android:label="AttributesFragment" >
         <argument android:name="services"
             app:argType="android.bluetooth.BluetoothGattService[]" />

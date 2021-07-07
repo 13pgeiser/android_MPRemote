@@ -2,7 +2,6 @@ package com.pgeiser.mpremote
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
-import timber.log.Timber
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -63,15 +62,13 @@ class Gatt {
         )
 
 
-        fun gattUuidAsString(uuid : UUID) : String {
+        fun gattUuidAsString(uuid: UUID): String {
             val uuidAsString = uuid.toString()
-            val serviceString : String = if (serviceMap.containsKey(uuidAsString)) {
+            return if (serviceMap.containsKey(uuidAsString)) {
                 serviceMap[uuidAsString]!!
             } else {
                 uuidAsString
             }
-            Timber.i(serviceString)
-            return serviceString
         }
     }
 }
