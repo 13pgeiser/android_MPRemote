@@ -1,17 +1,17 @@
-package com.pgeiser.mpremote.fragment_services
+package com.pgeiser.mpremote.fragment_characteristics
 
 import android.annotation.SuppressLint
-import android.bluetooth.BluetoothGattService
+import android.bluetooth.BluetoothGattCharacteristic
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.pgeiser.mpremote.Gatt
-import com.pgeiser.mpremote.databinding.ListItemServiceBinding
+import com.pgeiser.mpremote.databinding.ListItemCharacteristicBinding
 import timber.log.Timber
 
-class ServiceAdapter(private val clickListener: ServiceListener) : ListAdapter<BluetoothGattService, ServiceAdapter.ViewHolder>(ServiceDiffCallback()) {
+class CharacteristicsAdapter(private val clickListener: CharacteristicsListener) : ListAdapter<BluetoothGattCharacteristic, CharacteristicsAdapter.ViewHolder>(CharacteristicsDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         Timber.i("onCreateViewHolder!")
 
@@ -23,11 +23,11 @@ class ServiceAdapter(private val clickListener: ServiceListener) : ListAdapter<B
         holder.bind(clickListener, getItem(position))
     }
 
-    class ViewHolder private constructor(private val binding: ListItemServiceBinding)
+    class ViewHolder private constructor(private val binding: ListItemCharacteristicBinding)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(clickListener: ServiceListener, service: BluetoothGattService) {
-            Timber.i("bind! service.uuid=%s", service.uuid.toString())
-            binding.service = service
+        fun bind(clickListener: CharacteristicsListener, characteristic: BluetoothGattCharacteristic) {
+            Timber.i("bind! characteristic.uuid=%s", characteristic.uuid.toString())
+            binding.characteristic = characteristic
             binding.gatt = Gatt.Companion
             binding.clickListener = clickListener
             binding.executePendingBindings()
@@ -37,28 +37,27 @@ class ServiceAdapter(private val clickListener: ServiceListener) : ListAdapter<B
             fun from(parent: ViewGroup): ViewHolder {
                 Timber.i("from!")
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemServiceBinding.inflate(layoutInflater, parent, false)
+                val binding = ListItemCharacteristicBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
     }
 }
 
-class ServiceDiffCallback :
-    DiffUtil.ItemCallback<BluetoothGattService>() {
-    override fun areItemsTheSame(oldItem: BluetoothGattService, newItem: BluetoothGattService): Boolean {
+class CharacteristicsDiffCallback :
+    DiffUtil.ItemCallback<BluetoothGattCharacteristic>() {
+    override fun areItemsTheSame(oldItem: BluetoothGattCharacteristic, newItem: BluetoothGattCharacteristic): Boolean {
         Timber.i("areItemsTheSame!")
-
         return oldItem.instanceId == newItem.instanceId
     }
 
     @SuppressLint("DiffUtilEquals")
-    override fun areContentsTheSame(oldItem: BluetoothGattService, newItem: BluetoothGattService): Boolean {
+    override fun areContentsTheSame(oldItem: BluetoothGattCharacteristic, newItem: BluetoothGattCharacteristic): Boolean {
         Timber.i("areContentsTheSame!")
         return oldItem == newItem
     }
 }
 
-class ServiceListener(val clickListener: (instance_id: Int) -> Unit) {
-    fun onClick(service: BluetoothGattService) = clickListener(service.instanceId)
+class CharacteristicsListener(val clickListener: (instance_id: Int) -> Unit) {
+    fun onClick(characteristic: BluetoothGattCharacteristic) = clickListener(characteristic.instanceId)
 }

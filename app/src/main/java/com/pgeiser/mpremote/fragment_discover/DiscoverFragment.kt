@@ -31,10 +31,10 @@ class DiscoverFragment : Fragment() {
         val viewModelFactory = ConnectViewModelFactory(application, activity, bluetoothDevice)
         viewModel = ViewModelProvider(this, viewModelFactory).get(DiscoverViewModel::class.java)
         viewModel.gattServices.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
+            services -> if (services != null) {
                 Timber.i("ConnectFragmentDirections.actionConnectViewFragmentToAttributesFragment")
                 requireView().findNavController().navigate(
-                    DiscoverFragmentDirections.actionConnectViewFragmentToAttributesFragment(it))
+                    DiscoverFragmentDirections.actionConnectViewFragmentToAttributesFragment(services))
             }
         })
         viewModel.discover()

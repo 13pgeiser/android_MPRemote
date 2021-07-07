@@ -35,9 +35,21 @@
         <argument android:name="services"
             app:argType="android.bluetooth.BluetoothGattService[]" />
         <action
+            android:id="@+id/action_attributesFragment_to_characteristicsFragment"
+            app:destination="@id/characteristicsFragment" />
+        <action
             android:id="@+id/action_attributesFragment_to_connectViewFragment"
-            app:destination="@id/connectViewFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:popEnterAnim="@anim/slide_in_right" />
+            app:destination="@id/connectViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/characteristicsFragment"
+        android:name="com.pgeiser.mpremote.fragment_characteristics.CharacteristicsFragment"
+        android:label="CharacteristicsFragment" >
+        <action
+            android:id="@+id/action_characteristicsFragment_to_attributesFragment"
+            app:destination="@id/attributesFragment" />
+        <argument
+            android:name="service"
+            app:argType="android.bluetooth.BluetoothGattService" />
     </fragment>
 </navigation>

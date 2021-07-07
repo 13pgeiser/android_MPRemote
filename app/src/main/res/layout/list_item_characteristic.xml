@@ -6,12 +6,12 @@
 
     <data>
         <variable
-            name="service"
-            type="android.bluetooth.BluetoothGattService" />
+            name="characteristic"
+            type="android.bluetooth.BluetoothGattCharacteristic" />
 
         <variable
             name="clickListener"
-            type="com.pgeiser.mpremote.fragment_services.ServicesListener" />
+            type="com.pgeiser.mpremote.fragment_characteristics.CharacteristicsListener" />
 
         <variable
             name="gatt"
@@ -25,7 +25,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         app:cardCornerRadius="4dp"
-        android:onClick="@{ () -> clickListener.onClick(service) }">
+        android:onClick="@{ () -> clickListener.onClick(characteristic) }">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@{ gatt.gattUuidAsString(service.uuid) }" />
+            android:text="@{ gatt.gattUuidAsString(characteristic.uuid) }" />
 
         <TextView
             android:id="@+id/service_uuid"
@@ -50,7 +50,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@{ service.uuid.toString() }" />
+            android:text="@{ characteristic.uuid.toString() }" />
     </LinearLayout>
 
     </androidx.cardview.widget.CardView>

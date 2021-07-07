@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pgeiser.mpremote.MainActivity
 import com.pgeiser.mpremote.R
@@ -34,8 +34,13 @@ class ServicesFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ServicesViewModel::class.java)
         binding.model = viewModel
         binding.lifecycleOwner = this
+        /*
         val adapter = ServiceAdapter(ServiceListener {
                 serviceId -> Toast.makeText(context, "Service: ${serviceId}", Toast.LENGTH_SHORT).show()
+        })
+        */
+        val adapter = ServicesAdapter(ServicesListener {
+                serviceId -> requireView().findNavController().navigate(ServicesFragmentDirections.actionAttributesFragmentToCharacteristicsFragment(getService(services, serviceId)))
         })
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -45,5 +50,12 @@ class ServicesFragment : Fragment() {
         })
         Timber.i("onCreateView: service count=%d", services.size)
         return binding.root
+    }
+    fun getService(services : Array<BluetoothGattService>, serviceId: Int) : BluetoothGattService {
+        services.forEach {
+            if (it.instanceId == serviceId)
+                return it
+        }
+        throw Exception("Service not found")
     }
 }

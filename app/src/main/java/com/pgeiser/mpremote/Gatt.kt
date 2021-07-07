@@ -54,12 +54,26 @@ class Gatt {
 
         private val serviceMap: HashMap<String, String> = hashMapOf(
             // See https://specificationrefs.bluetooth.com/assigned-values/16-bit%20UUID%20Numbers%20Document.pdf
+            "00001800-0000-1000-8000-00805f9b34fb" to "Generic Access",
             "00001801-0000-1000-8000-00805f9b34fb" to "Generic Attribute",
             "0000180a-0000-1000-8000-00805f9b34fb" to "Device Information",
-            "5a791800-0d19-4fd9-87f9-e934aedbce59" to "Roger Service",
             "0000180f-0000-1000-8000-00805f9b34fb" to "Battery",
-            "00001800-0000-1000-8000-00805f9b34fb" to "Generic Access",
-        )
+            "00002a00-0000-1000-8000-00805f9b34fb" to "Device Name",
+            "00002a01-0000-1000-8000-00805f9b34fb" to "Appearance",
+            "00002a04-0000-1000-8000-00805f9b34fb" to "Peripheral Preferred Connection Parameters",
+            "00002a19-0000-1000-8000-00805f9b34fb" to "Battery Level",
+            "00002a24-0000-1000-8000-00805f9b34fb" to "Model Number String",
+            "00002a25-0000-1000-8000-00805f9b34fb" to "Serial Number String",
+            "00002a26-0000-1000-8000-00805f9b34fb" to "Firmware Revision String",
+            "00002a27-0000-1000-8000-00805f9b34fb" to "Hardware Revision String",
+            "00002a28-0000-1000-8000-00805f9b34fb" to "Software Revision String",
+            "00002a29-0000-1000-8000-00805f9b34fb" to "Manufacturer Name String",
+            "00002aa6-0000-1000-8000-00805f9b34fb" to "Central Address Resolution",
+            "5a791800-0d19-4fd9-87f9-e934aedbce59" to "Roger Service",
+            "5a792000-0d19-4fd9-87f9-e934aedbce59" to "Roger State",
+            "5a792001-0d19-4fd9-87f9-e934aedbce59" to "Roger Control Point",
+            "5a792002-0d19-4fd9-87f9-e934aedbce59" to "Roger Feature Bitmap",
+            )
 
 
         fun gattUuidAsString(uuid: UUID): String {
