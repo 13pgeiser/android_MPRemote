@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.pgeiser.mpremote.Gatt
 import com.pgeiser.mpremote.R
 import com.pgeiser.mpremote.databinding.ListItemServiceBinding
 import timber.log.Timber
@@ -29,6 +30,7 @@ class ServiceAdapter(private val clickListener: ServiceListener) : ListAdapter<B
         fun bind(clickListener: ServiceListener, service: BluetoothGattService) {
             Timber.i("bind! service.uuid=%s", service.uuid.toString())
             binding.service = service
+            binding.gatt = Gatt.Companion
             binding.clickListener = clickListener
             binding.executePendingBindings()
         }

@@ -12,6 +12,10 @@
         <variable
             name="clickListener"
             type="com.pgeiser.mpremote.fragment_attributes.ServiceListener" />
+
+        <variable
+            name="gatt"
+            type="com.pgeiser.mpremote.Gatt.Companion" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -36,7 +40,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Service name here" />
+            android:text="@{ gatt.gattUuidAsString(service.uuid) }" />
 
         <TextView
             android:id="@+id/service_uuid"
