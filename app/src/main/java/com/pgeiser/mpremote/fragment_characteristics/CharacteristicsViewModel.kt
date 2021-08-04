@@ -1,6 +1,7 @@
 package com.pgeiser.mpremote.fragment_characteristics
 
 import android.app.Application
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import androidx.lifecycle.*
 import com.pgeiser.mpremote.MainActivity
@@ -31,6 +32,15 @@ class CharacteristicsViewModel(
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onStop() {
         Timber.i("onStop")
+    }
+
+    fun getCharacteristicFromId(instanceId : Int) : BluetoothGattCharacteristic {
+        gattService.value!!.characteristics.forEach {
+            if (it.instanceId == instanceId) {
+                return it
+            }
+        }
+        throw Exception("Characteristic not found.")
     }
 
 }

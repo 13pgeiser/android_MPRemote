@@ -1,15 +1,14 @@
 package com.pgeiser.mpremote.fragment_characteristics
 
-import android.bluetooth.BluetoothGattService
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pgeiser.mpremote.MainActivity
 import com.pgeiser.mpremote.R
@@ -35,7 +34,10 @@ class CharacteristicsFragment : Fragment() {
         binding.model = viewModel
         binding.lifecycleOwner = this
         val adapter = CharacteristicsAdapter(CharacteristicsListener {
-                characteristicId -> Toast.makeText(context, "characteristicId: ${characteristicId}", Toast.LENGTH_SHORT).show()
+                characteristicId ->
+                    val characteristic = viewModel.getCharacteristicFromId(characteristicId)
+                    Timber.i(characteristic.toString())
+                    requireView().findNavController().navigate(CharacteristicsFragmentDirections.actionCharacteristicsFragmentToCharacteristicFragment(characteristic))
         })
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)

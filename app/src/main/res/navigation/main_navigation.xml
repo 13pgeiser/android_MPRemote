@@ -9,37 +9,38 @@
         android:name="com.pgeiser.mpremote.fragment_welcome.WelcomeFragment"
         android:label="WelcomeFragment" >
         <action
-            android:id="@+id/action_welcomeFragment_to_connectViewFragment"
-            app:destination="@id/connectViewFragment" />
+            android:id="@+id/action_welcomeFragment_to_discoverViewFragment"
+            app:destination="@id/discoverViewFragment" />
     </fragment>
     <fragment
-        android:id="@+id/connectViewFragment"
+        android:id="@+id/discoverViewFragment"
         android:name="com.pgeiser.mpremote.fragment_discover.DiscoverFragment"
-        android:label="ConnectViewFragment" >
+        android:label="DiscoverViewFragment">
         <argument
             android:name="bluetoothDevice"
             app:argType="android.bluetooth.BluetoothDevice" />
-        <action
-            android:id="@+id/action_connectViewFragment_to_attributesFragment"
-            app:destination="@id/attributesFragment" />
         <action
             android:id="@+id/action_connectViewFragment_to_welcomeFragment"
             app:destination="@id/welcomeFragment"
             app:enterAnim="@anim/slide_in_right"
             app:popEnterAnim="@anim/slide_in_right" />
+        <action
+            android:id="@+id/action_discoverViewFragment_to_servicesFragment"
+            app:destination="@id/servicesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/attributesFragment"
+        android:id="@+id/servicesFragment"
         android:name="com.pgeiser.mpremote.fragment_services.ServicesFragment"
-        android:label="AttributesFragment" >
-        <argument android:name="services"
+        android:label="ServicesFragment">
+        <argument
+            android:name="services"
             app:argType="android.bluetooth.BluetoothGattService[]" />
         <action
             android:id="@+id/action_attributesFragment_to_characteristicsFragment"
             app:destination="@id/characteristicsFragment" />
         <action
             android:id="@+id/action_attributesFragment_to_connectViewFragment"
-            app:destination="@id/connectViewFragment" />
+            app:destination="@id/discoverViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/characteristicsFragment"
@@ -47,9 +48,23 @@
         android:label="CharacteristicsFragment" >
         <action
             android:id="@+id/action_characteristicsFragment_to_attributesFragment"
-            app:destination="@id/attributesFragment" />
+            app:destination="@id/servicesFragment" />
         <argument
             android:name="service"
             app:argType="android.bluetooth.BluetoothGattService" />
+        <action
+            android:id="@+id/action_characteristicsFragment_to_characteristicFragment"
+            app:destination="@id/characteristicFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/characteristicFragment"
+        android:name="com.pgeiser.mpremote.fragment_characteristic.CharacteristicFragment"
+        android:label="CharacteristicFragment" >
+        <action
+            android:id="@+id/action_characteristicFragment_to_characteristicsFragment"
+            app:destination="@id/characteristicsFragment" />
+        <argument
+            android:name="characteristic"
+            app:argType="android.bluetooth.BluetoothGattCharacteristic" />
     </fragment>
 </navigation>

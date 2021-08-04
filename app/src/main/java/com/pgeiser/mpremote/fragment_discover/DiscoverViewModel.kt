@@ -27,7 +27,7 @@ class DiscoverViewModel(
 
     private val gattCallback = object : BluetoothGattCallback() {
         var GATT_MAX_MTU_SIZE = 517
-        // ctrl-o onConnec...
+        // ctrl-o onConnect...
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
             val deviceAddress = gatt.device.address

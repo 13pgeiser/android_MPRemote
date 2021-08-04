@@ -34,11 +34,6 @@ class ServicesFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(ServicesViewModel::class.java)
         binding.model = viewModel
         binding.lifecycleOwner = this
-        /*
-        val adapter = ServiceAdapter(ServiceListener {
-                serviceId -> Toast.makeText(context, "Service: ${serviceId}", Toast.LENGTH_SHORT).show()
-        })
-        */
         val adapter = ServicesAdapter(ServicesListener {
                 serviceId -> requireView().findNavController().navigate(ServicesFragmentDirections.actionAttributesFragmentToCharacteristicsFragment(getService(services, serviceId)))
         })
@@ -51,6 +46,7 @@ class ServicesFragment : Fragment() {
         Timber.i("onCreateView: service count=%d", services.size)
         return binding.root
     }
+
     fun getService(services : Array<BluetoothGattService>, serviceId: Int) : BluetoothGattService {
         services.forEach {
             if (it.instanceId == serviceId)

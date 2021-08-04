@@ -35,7 +35,7 @@ class WelcomeFragment : Fragment() {
             if (it != null) {
                 Timber.i("WelcomeFragmentDirections.actionWelcomeFragmentToConnectViewFragment")
                 requireView().findNavController().navigate(
-                    WelcomeFragmentDirections.actionWelcomeFragmentToConnectViewFragment(it))
+                    WelcomeFragmentDirections.actionWelcomeFragmentToDiscoverViewFragment(it))
             }
         })
         Timber.i("onCreateView: done!")

@@ -1,5 +1,6 @@
 package com.pgeiser.mpremote.fragment_discover
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,7 @@ class DiscoverFragment : Fragment() {
             services -> if (services != null) {
                 Timber.i("ConnectFragmentDirections.actionConnectViewFragmentToAttributesFragment")
                 requireView().findNavController().navigate(
-                    DiscoverFragmentDirections.actionConnectViewFragmentToAttributesFragment(services))
+                    DiscoverFragmentDirections.actionDiscoverViewFragmentToServicesFragment(services))
             }
         })
         viewModel.discover()
