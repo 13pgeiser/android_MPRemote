@@ -35,7 +35,7 @@ class ServicesFragment : Fragment() {
         binding.model = viewModel
         binding.lifecycleOwner = this
         val adapter = ServicesAdapter(ServicesListener {
-                serviceId -> requireView().findNavController().navigate(ServicesFragmentDirections.actionAttributesFragmentToCharacteristicsFragment(getService(services, serviceId)))
+                serviceId -> requireView().findNavController().navigate(ServicesFragmentDirections.actionAttributesFragmentToCharacteristicsFragment(getService(services, serviceId), safeArgs.bluetoothDevice))
         })
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)

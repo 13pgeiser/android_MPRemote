@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         this.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun doChecks() {
         Timber.i("doChecks!")
         methodRequirePermissions()

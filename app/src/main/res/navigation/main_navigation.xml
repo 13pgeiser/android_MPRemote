@@ -41,6 +41,8 @@
         <action
             android:id="@+id/action_attributesFragment_to_connectViewFragment"
             app:destination="@id/discoverViewFragment" />
+        <argument android:name="bluetoothDevice"
+            app:argType="android.bluetooth.BluetoothDevice" />
     </fragment>
     <fragment
         android:id="@+id/characteristicsFragment"
@@ -55,6 +57,9 @@
         <action
             android:id="@+id/action_characteristicsFragment_to_characteristicFragment"
             app:destination="@id/characteristicFragment" />
+        <argument
+            android:name="bluetoothDevice"
+            app:argType="android.bluetooth.BluetoothDevice" />
     </fragment>
     <fragment
         android:id="@+id/characteristicFragment"
@@ -66,5 +71,8 @@
         <argument
             android:name="characteristic"
             app:argType="android.bluetooth.BluetoothGattCharacteristic" />
+        <argument
+            android:name="bluetoothDevice"
+            app:argType="android.bluetooth.BluetoothDevice" />
     </fragment>
 </navigation>

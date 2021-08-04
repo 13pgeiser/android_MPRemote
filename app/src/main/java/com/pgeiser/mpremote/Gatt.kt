@@ -86,5 +86,18 @@ class Gatt {
             Timber.i("gattUuidAsString: --> %s", uuidAsString)
             return uuidAsString
         }
+
+        fun getStringForByteArray(data : ByteArray) : String {
+            var decodedString = String(data, Charsets.UTF_8)
+            decodedString = decodedString.replace(Regex("[^\\x00-\\x7F]"), "");
+            decodedString = decodedString.replace(Regex("[\\p{C}]"), "");
+            decodedString = decodedString.replace(Regex("[\\p{Cntrl}\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}]"), "");
+            val outputBytes: ByteArray = decodedString.toByteArray(Charsets.UTF_8)
+            return if (outputBytes.contentEquals(data)) {
+                decodedString
+            } else {
+                data.contentToString()
+            }
+        }
     }
 }

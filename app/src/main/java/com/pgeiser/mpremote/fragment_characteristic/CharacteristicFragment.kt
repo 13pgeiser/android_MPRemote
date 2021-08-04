@@ -26,7 +26,7 @@ class CharacteristicFragment : Fragment() {
         val application = requireNotNull(this.activity).application
         val activity = requireActivity() as MainActivity
         val safeArgs = CharacteristicFragmentArgs.fromBundle(requireArguments())
-        val viewModelFactory = CharacteristicViewModelFactory(application, activity, safeArgs.characteristic)
+        val viewModelFactory = CharacteristicViewModelFactory(application, activity, safeArgs.characteristic, safeArgs.bluetoothDevice)
         viewModel = ViewModelProvider(this, viewModelFactory).get(CharacteristicViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

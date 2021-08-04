@@ -35,7 +35,7 @@ class DiscoverFragment : Fragment() {
             services -> if (services != null) {
                 Timber.i("ConnectFragmentDirections.actionConnectViewFragmentToAttributesFragment")
                 requireView().findNavController().navigate(
-                    DiscoverFragmentDirections.actionDiscoverViewFragmentToServicesFragment(services))
+                    DiscoverFragmentDirections.actionDiscoverViewFragmentToServicesFragment(services, bluetoothDevice))
             }
         })
         viewModel.discover()

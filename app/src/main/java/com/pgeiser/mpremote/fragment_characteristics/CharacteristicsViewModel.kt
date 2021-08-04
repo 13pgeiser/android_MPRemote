@@ -29,11 +29,6 @@ class CharacteristicsViewModel(
         _gattService.value = service
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    private fun onStop() {
-        Timber.i("onStop")
-    }
-
     fun getCharacteristicFromId(instanceId : Int) : BluetoothGattCharacteristic {
         gattService.value!!.characteristics.forEach {
             if (it.instanceId == instanceId) {

@@ -3,7 +3,9 @@ package com.pgeiser.mpremote.fragment_discover
 import android.app.Application
 import android.bluetooth.*
 import androidx.lifecycle.*
+import com.pgeiser.mpremote.Gatt
 import com.pgeiser.mpremote.MainActivity
+import com.pgeiser.mpremote.MyGattCallback
 import kotlinx.coroutines.*
 import timber.log.Timber
 
@@ -25,69 +27,6 @@ class DiscoverViewModel(
         viewModelJob.cancel()
     }
 
-    private val gattCallback = object : BluetoothGattCallback() {
-        var GATT_MAX_MTU_SIZE = 517
-        // ctrl-o onConnect...
-        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-            val deviceAddress = gatt.device.address
-            Timber.i("onConnectionStateChange $gatt $status $newState $deviceAddress")
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                if (newState == BluetoothProfile.STATE_CONNECTED) {
-                    Timber.i("Successfully connected to $deviceAddress")
-                    gatt.requestMtu(GATT_MAX_MTU_SIZE)
-                } else {
-                    gatt.close()
-                }
-            } else {
-                gatt.close()
-                uiScope.launch {
-                    _connectionAttempt.value = _connectionAttempt.value?.plus(1)
-                }
-                if (connectionAttempt.value!! <= maxConnectionAttempt) {
-                    defaultScope.launch {
-                        Timber.i("Waiting...")
-                        delay(250)
-                        connectGattInternal()
-                    }
-                } else {
-                    Timber.w("No way...")
-                }
-            }
-        }
-
-        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
-            super.onMtuChanged(gatt, mtu, status)
-            Timber.i("ATT MTU changed to $mtu, success: ${status == BluetoothGatt.GATT_SUCCESS}")
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                gatt.discoverServices()
-            } else {
-                gatt.close()
-            }
-        }
-
-        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            super.onServicesDiscovered(gatt, status)
-            Timber.i("Discovered ${gatt.services.size} services for ${gatt.device.address}.")
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                if (gatt.services.isEmpty()) {
-                    Timber.i("No Services found!!!!")
-                    uiScope.launch {
-                        _gattServices.value = gatt.services.toTypedArray()
-                    }
-                } else {
-                    uiScope.launch {
-                        _gattServices.value = gatt.services.toTypedArray()
-                    }
-                }
-                gatt.close()
-            } else {
-                gatt.close()
-            }
-        }
-    }
-    // ---------------------------------------------------------------------------------------------
-
     private val _connectionAttempt = MutableLiveData<Int>()
     val connectionAttempt : LiveData<Int> get() = _connectionAttempt
     private var maxConnectionAttempt = 10
@@ -108,21 +47,36 @@ class DiscoverViewModel(
             _connectionAttempt.value = 0
             _gattServices.value = null
         }
-        connectGattInternal()
-    }
-
-    private fun connectGattInternal() {
+        val gattCallback = object : MyGattCallback(activity, btDev) {
+            override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+                super.onConnectionStateChange(gatt, status, newState)
+                uiScope.launch {
+                    _connectionAttempt.value = callbackConnectionAttempt
+                }
+            }
+            override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+                super.onServicesDiscovered(gatt, status)
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    if (gatt.services.isEmpty()) {
+                        Timber.i("No Services found!!!!")
+                        uiScope.launch {
+                            _gattServices.value = gatt.services.toTypedArray()
+                        }
+                    } else {
+                        uiScope.launch {
+                            _gattServices.value = gatt.services.toTypedArray()
+                        }
+                    }
+                    gatt.close()
+                }
+            }
+        }
         bluetoothDevice.value?.connectGatt(activity.applicationContext, false, gattCallback)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    private fun onStart() {
-        Timber.i("onStart")
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private fun onResume() {
+        Timber.i("onResume")
         discover()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    private fun onStop() {
-        Timber.i("onStop")
     }
 }

@@ -37,7 +37,7 @@ class CharacteristicsFragment : Fragment() {
                 characteristicId ->
                     val characteristic = viewModel.getCharacteristicFromId(characteristicId)
                     Timber.i(characteristic.toString())
-                    requireView().findNavController().navigate(CharacteristicsFragmentDirections.actionCharacteristicsFragmentToCharacteristicFragment(characteristic))
+                    requireView().findNavController().navigate(CharacteristicsFragmentDirections.actionCharacteristicsFragmentToCharacteristicFragment(characteristic, safeArgs.bluetoothDevice))
         })
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
