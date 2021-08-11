@@ -1,4 +1,4 @@
-package com.pgeiser.mpremote
+package com.pgeiser.mpremote.gatt
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
@@ -99,5 +99,7 @@ class Gatt {
                 data.contentToString()
             }
         }
+
+        val GATT_ERROR = 0x85
     }
 }

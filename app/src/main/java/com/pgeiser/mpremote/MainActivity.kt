@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import com.pgeiser.mpremote.gatt.GattConnection
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
 import timber.log.Timber
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     companion object {
         private const val REQUEST_CODE_PERMISSION = 42 // No comment...
     }
+
+    var gattConnection : GattConnection? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

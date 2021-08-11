@@ -38,7 +38,6 @@ class DiscoverFragment : Fragment() {
                     DiscoverFragmentDirections.actionDiscoverViewFragmentToServicesFragment(services, bluetoothDevice))
             }
         })
-        viewModel.discover()
         binding.model = viewModel
         binding.lifecycleOwner = this
         Timber.i("onCreateView: done!")

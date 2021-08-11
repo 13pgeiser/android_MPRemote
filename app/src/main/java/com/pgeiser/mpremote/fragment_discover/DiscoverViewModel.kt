@@ -1,11 +1,12 @@
 package com.pgeiser.mpremote.fragment_discover
 
 import android.app.Application
-import android.bluetooth.*
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattService
 import androidx.lifecycle.*
-import com.pgeiser.mpremote.Gatt
 import com.pgeiser.mpremote.MainActivity
-import com.pgeiser.mpremote.MyGattCallback
+import com.pgeiser.mpremote.gatt.GattConnection
 import kotlinx.coroutines.*
 import timber.log.Timber
 
@@ -20,7 +21,8 @@ class DiscoverViewModel(
 
     private var viewModelJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-    private val defaultScope = CoroutineScope(Dispatchers.Default + viewModelJob)
+    private val GATT_MAX_MTU_SIZE = 517
+
 
     override fun onCleared() {
         super.onCleared()
@@ -29,7 +31,6 @@ class DiscoverViewModel(
 
     private val _connectionAttempt = MutableLiveData<Int>()
     val connectionAttempt : LiveData<Int> get() = _connectionAttempt
-    private var maxConnectionAttempt = 10
     private val _bluetoothDevice = MutableLiveData<BluetoothDevice>()
     val bluetoothDevice : LiveData<BluetoothDevice>  get() = _bluetoothDevice
     private val _gattServices = MutableLiveData<Array<BluetoothGattService>>()
@@ -43,35 +44,20 @@ class DiscoverViewModel(
 
     fun discover() {
         Timber.i("discover")
+
         uiScope.launch {
             _connectionAttempt.value = 0
             _gattServices.value = null
         }
-        val gattCallback = object : MyGattCallback(activity, btDev) {
-            override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
-                super.onConnectionStateChange(gatt, status, newState)
-                uiScope.launch {
-                    _connectionAttempt.value = callbackConnectionAttempt
-                }
-            }
-            override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-                super.onServicesDiscovered(gatt, status)
-                if (status == BluetoothGatt.GATT_SUCCESS) {
-                    if (gatt.services.isEmpty()) {
-                        Timber.i("No Services found!!!!")
-                        uiScope.launch {
-                            _gattServices.value = gatt.services.toTypedArray()
-                        }
-                    } else {
-                        uiScope.launch {
-                            _gattServices.value = gatt.services.toTypedArray()
-                        }
-                    }
-                    gatt.close()
-                }
+
+        val gattConnection = GattConnection(activity.applicationContext, btDev)
+        activity.gattConnection = gattConnection
+        gattConnection.mtu(GATT_MAX_MTU_SIZE, null)
+        gattConnection.discover {
+            uiScope.launch {
+                _gattServices.value = it
             }
         }
-        bluetoothDevice.value?.connectGatt(activity.applicationContext, false, gattCallback)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

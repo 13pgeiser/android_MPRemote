@@ -3,7 +3,7 @@ package com.pgeiser.mpremote.fragment_services
 import android.app.Application
 import android.bluetooth.BluetoothGattService
 import androidx.lifecycle.*
-import com.pgeiser.mpremote.Gatt
+import com.pgeiser.mpremote.gatt.Gatt
 import com.pgeiser.mpremote.MainActivity
 import timber.log.Timber
 

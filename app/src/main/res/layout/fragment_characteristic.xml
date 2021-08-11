@@ -9,10 +9,6 @@
         <variable
             name="viewModel"
             type="com.pgeiser.mpremote.fragment_characteristic.CharacteristicViewModel"/>
-
-        <variable
-            name="gatt"
-            type="com.pgeiser.mpremote.Gatt.Companion" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

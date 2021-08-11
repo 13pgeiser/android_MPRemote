@@ -15,7 +15,7 @@
 
         <variable
             name="gatt"
-            type="com.pgeiser.mpremote.Gatt.Companion" />
+            type="com.pgeiser.mpremote.gatt.Gatt.Companion" />
     </data>
 
     <androidx.cardview.widget.CardView

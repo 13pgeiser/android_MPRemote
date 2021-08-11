@@ -2,21 +2,15 @@ package com.pgeiser.mpremote.fragment_characteristic
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import androidx.lifecycle.*
-import com.pgeiser.mpremote.Gatt
+import com.pgeiser.mpremote.gatt.Gatt
 import com.pgeiser.mpremote.MainActivity
-import com.pgeiser.mpremote.MyGattCallback
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.nio.ByteBuffer
-import java.nio.charset.CodingErrorAction
-import java.util.*
 
 class CharacteristicViewModel(
     application: Application,
@@ -56,28 +50,16 @@ class CharacteristicViewModel(
     private fun setCharacteristic(c : BluetoothGattCharacteristic) {
         _characteristic.value = c
         if ((c.properties and BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
-            val readCallback = object : MyGattCallback(activity, bluetoothDevice) {
-                override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-                    super.onServicesDiscovered(gatt, status)
-                    if (status == BluetoothGatt.GATT_SUCCESS) {
-                        gatt.readCharacteristic(characteristic.value!!)
+            val gattConnection = activity.gattConnection
+            gattConnection?.readCharacteristic(characteristic.value!!) {
+                uiScope.launch {
+                    if (it.size == 1) {
+                        _characteristicValue.value = it.first().toInt().toString()
+                    } else {
+                        _characteristicValue.value = Gatt.getStringForByteArray(it)
                     }
-                }
-
-                override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic?, status: Int) {
-                    super.onCharacteristicRead(gatt, characteristic, status)
-                    uiScope.launch {
-                        val data = characteristic!!.value
-                        if (data.size == 1) {
-                            _characteristicValue.value = data.first().toInt().toString()
-                        } else {
-                            _characteristicValue.value = Gatt.getStringForByteArray(data)
-                        }
-                    }
-                    gatt.close()
                 }
             }
-            bluetoothDevice.connectGatt(activity.applicationContext, false, readCallback)
         }
     }
 
