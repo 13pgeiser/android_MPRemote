@@ -42,7 +42,7 @@ class DiscoverViewModel(
         activity.lifecycle.addObserver(this)
     }
 
-    fun discover() {
+    private fun discover() {
         Timber.i("discover")
 
         uiScope.launch {
@@ -52,6 +52,11 @@ class DiscoverViewModel(
 
         val gattConnection = GattConnection(activity.applicationContext, btDev)
         activity.gattConnection = gattConnection
+        gattConnection.connect {
+            uiScope.launch {
+                _connectionAttempt.value = _connectionAttempt.value?.plus(1)
+            }
+        }
         gattConnection.mtu(GATT_MAX_MTU_SIZE, null)
         gattConnection.discover {
             uiScope.launch {

@@ -84,7 +84,12 @@ class GattConnection (
     private fun processOps() {
         Timber.i("processOps $runningOp, $isConnected")
         if (! isConnected) {
-            operations.add(0, BleOpConnect(null))
+            if (operations.isEmpty()) {
+                operations.add(0, BleOpConnect(null))
+            }
+            if (operations[0] !is BleOpConnect) {
+                operations.add(0, BleOpConnect(null))
+            }
         }
         if (operations.isEmpty()) {
             Timber.i("processOps Nothing to do!")
@@ -97,8 +102,13 @@ class GattConnection (
 
     @Synchronized
     private fun currentOpPerformed() {
-        runningOp = null
         Timber.i("currentOpPerformed $runningOp")
+        if (! isConnected) {
+            if (runningOp is BleOpConnect) {
+                operations.add(0, runningOp as BleOpConnect)
+            }
+        }
+        runningOp = null
         processOps()
     }
 
@@ -142,6 +152,10 @@ class GattConnection (
         currentOpPerformed()
     }
 
+    fun connect(callback : ((Int) -> Unit)?) {
+        enqueue(BleOpConnect(callback))
+    }
+
     fun mtu(mtu: Int, callback : ((Int) -> Unit)?) {
         enqueue(BleOpMtu(mtu, callback))
     }
@@ -153,5 +167,4 @@ class GattConnection (
     fun readCharacteristic(characteristic: BluetoothGattCharacteristic, callback : ((ByteArray) -> Unit)?) {
         enqueue(BleOpReadCharacteristic(characteristic, callback))
     }
-
 }
