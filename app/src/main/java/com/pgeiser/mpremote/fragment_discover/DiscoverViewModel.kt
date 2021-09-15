@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattService
 import androidx.lifecycle.*
 import com.pgeiser.mpremote.MainActivity
+import com.pgeiser.mpremote.gatt.Gatt
 import com.pgeiser.mpremote.gatt.GattConnection
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -36,33 +37,40 @@ class DiscoverViewModel(
     private val _gattServices = MutableLiveData<Array<BluetoothGattService>>()
     val gattServices : LiveData<Array<BluetoothGattService>>  get() = _gattServices
 
+    private lateinit var gattConnection : GattConnection
+
     init {
         Timber.i("init: %s", btDev)
         _bluetoothDevice.value = btDev
         activity.lifecycle.addObserver(this)
     }
 
+    private fun handleConnection(status : Int) {
+        Timber.i("connect status %s", status.toString())
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            gattConnection.mtu(GATT_MAX_MTU_SIZE, null)
+            gattConnection.discover {
+                uiScope.launch {
+                    _gattServices.value = it
+                }
+            }
+        } else {
+            uiScope.launch {
+                _connectionAttempt.value = _connectionAttempt.value?.plus(1)
+            }
+            gattConnection.connect(::handleConnection)
+        }
+    }
+
     private fun discover() {
         Timber.i("discover")
-
         uiScope.launch {
             _connectionAttempt.value = 0
             _gattServices.value = null
         }
-
-        val gattConnection = GattConnection(activity.applicationContext, btDev)
+        gattConnection = GattConnection(activity.applicationContext, btDev)
         activity.gattConnection = gattConnection
-        gattConnection.connect {
-            uiScope.launch {
-                _connectionAttempt.value = _connectionAttempt.value?.plus(1)
-            }
-        }
-        gattConnection.mtu(GATT_MAX_MTU_SIZE, null)
-        gattConnection.discover {
-            uiScope.launch {
-                _gattServices.value = it
-            }
-        }
+        gattConnection.connect(::handleConnection)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

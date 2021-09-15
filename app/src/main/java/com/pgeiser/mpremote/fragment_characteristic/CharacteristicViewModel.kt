@@ -17,7 +17,6 @@ class CharacteristicViewModel(
     private val activity: MainActivity,
     private val init_characteristic : BluetoothGattCharacteristic,
     private val bluetoothDevice : BluetoothDevice,
-
     )
     : AndroidViewModel(application) , LifecycleObserver {
 
@@ -47,9 +46,9 @@ class CharacteristicViewModel(
         activity.lifecycle.addObserver(this)
     }
 
-    private fun setCharacteristic(c : BluetoothGattCharacteristic) {
-        _characteristic.value = c
-        if ((c.properties and BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
+    fun readCharacteristic() {
+        _characteristic.value = init_characteristic
+        if ((characteristic.value!!.properties and BluetoothGattCharacteristic.PROPERTY_READ) != 0) {
             val gattConnection = activity.gattConnection
             gattConnection?.readCharacteristic(characteristic.value!!) {
                 uiScope.launch {
@@ -61,11 +60,5 @@ class CharacteristicViewModel(
                 }
             }
         }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    private fun onResume() {
-        Timber.i("onResume")
-        setCharacteristic(init_characteristic)
     }
 }

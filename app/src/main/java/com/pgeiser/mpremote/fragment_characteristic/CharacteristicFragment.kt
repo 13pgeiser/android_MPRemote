@@ -1,6 +1,8 @@
 package com.pgeiser.mpremote.fragment_characteristic
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,8 @@ import timber.log.Timber
 
 class CharacteristicFragment : Fragment() {
     private lateinit var viewModel: CharacteristicViewModel
+    private lateinit var handler : Handler
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,6 +35,30 @@ class CharacteristicFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         Timber.i("onCreateView: done!")
+        handler = Handler(Looper.getMainLooper())
         return binding.root
+    }
+
+    private fun refreshUI() {
+        val r: Runnable = object : Runnable {
+            override fun run() {
+                viewModel.readCharacteristic()
+                handler.postDelayed(this, 1000)
+            }
+        }
+        handler.postDelayed(r, 1000)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.i("onResume")
+        viewModel.readCharacteristic()
+        refreshUI()
+    }
+
+    override fun onPause() {
+        handler.removeCallbacksAndMessages(null)
+        super.onPause()
+        Timber.i("onPause")
     }
 }

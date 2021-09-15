@@ -70,7 +70,6 @@ class GattConnection (
     private val operations: MutableList<BleOp> = mutableListOf<BleOp>()
     private var runningOp: BleOp? = null
     internal var gatt : BluetoothGatt? = null
-    private var isConnected : Boolean = false
 
     @Synchronized
     private fun enqueue(op: BleOp) {
@@ -82,15 +81,6 @@ class GattConnection (
 
     @Synchronized
     private fun processOps() {
-        Timber.i("processOps $runningOp, $isConnected")
-        if (! isConnected) {
-            if (operations.isEmpty()) {
-                operations.add(0, BleOpConnect(null))
-            }
-            if (operations[0] !is BleOpConnect) {
-                operations.add(0, BleOpConnect(null))
-            }
-        }
         if (operations.isEmpty()) {
             Timber.i("processOps Nothing to do!")
         } else {
@@ -103,11 +93,6 @@ class GattConnection (
     @Synchronized
     private fun currentOpPerformed() {
         Timber.i("currentOpPerformed $runningOp")
-        if (! isConnected) {
-            if (runningOp is BleOpConnect) {
-                operations.add(0, runningOp as BleOpConnect)
-            }
-        }
         runningOp = null
         processOps()
     }
@@ -117,10 +102,8 @@ class GattConnection (
         val deviceAddress = gatt.device.address
         Timber.i("onConnectionStateChange $gatt $status $newState $deviceAddress")
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            isConnected = true
             this.gatt = gatt
         } else if (status == Gatt.GATT_ERROR) {
-            isConnected = false
             this.gatt = null
         }
         val currentOp = runningOp as BleOpConnect
