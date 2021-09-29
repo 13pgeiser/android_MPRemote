@@ -52,8 +52,9 @@ class CharacteristicFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Timber.i("onResume")
-        viewModel.readCharacteristic()
-        refreshUI()
+        if (viewModel.readCharacteristic()) {
+            refreshUI()
+        }
     }
 
     override fun onPause() {

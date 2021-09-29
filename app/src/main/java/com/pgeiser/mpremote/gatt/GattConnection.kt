@@ -63,6 +63,20 @@ private class BleOpReadCharacteristic(
     }
 }
 
+private class BleOpWriteCharacteristic(
+    private val characteristic: BluetoothGattCharacteristic,
+    private val callback : ((Boolean) -> Unit)?
+): BleOp() {
+    override fun perform(gattConnection: GattConnection) {
+        Timber.i("perform BleOpWriteCharacteristic $gattConnection.gatt")
+        gattConnection.gatt?.writeCharacteristic(characteristic)
+    }
+
+    fun handled(success : Boolean) {
+        callback?.invoke(success)
+    }
+}
+
 class GattConnection (
     internal val context : Context,
     internal val bluetoothDevice : BluetoothDevice,
@@ -135,6 +149,18 @@ class GattConnection (
         currentOpPerformed()
     }
 
+    override fun onCharacteristicWrite(
+        gatt: BluetoothGatt?,
+        characteristic: BluetoothGattCharacteristic?,
+        status: Int
+    ) {
+        super.onCharacteristicWrite(gatt, characteristic, status)
+        Timber.w("onCharacteristicRead status: $status")
+        val currentOp = runningOp as BleOpWriteCharacteristic
+        currentOp.handled(status == BluetoothGatt.GATT_SUCCESS)
+        currentOpPerformed()
+    }
+
     fun connect(callback : ((Int) -> Unit)?) {
         enqueue(BleOpConnect(callback))
     }
@@ -149,5 +175,9 @@ class GattConnection (
 
     fun readCharacteristic(characteristic: BluetoothGattCharacteristic, callback : ((ByteArray) -> Unit)?) {
         enqueue(BleOpReadCharacteristic(characteristic, callback))
+    }
+
+    fun writeCharacteristic(characteristic: BluetoothGattCharacteristic, callback : ((Boolean) -> Unit)?) {
+        enqueue(BleOpWriteCharacteristic(characteristic, callback))
     }
 }
